@@ -191,4 +191,5 @@ Ejemplo:
                     total += value * self.matrix_tf_norm[column][word]
                 vector.append(total)
             self.matrix_cosine.append(vector)
-````
+````  
+

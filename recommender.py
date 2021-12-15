@@ -24,9 +24,16 @@ class Recommender_CB:
         # Numbers of docs
         self.N = len(self.matrix_documents)
 
+        # # TF-total
+        # for document in self.matrix_documents:
+        #     dicc_words = dict.fromkeys(self.total_words, 0)
+        #     for word in document:
+        #         dicc_words[word] += 1
+        #     self.matrix_tf.append(dicc_words)
+            
         # TF
         for document in self.matrix_documents:
-            dicc_words = dict.fromkeys(self.total_words, 0)
+            dicc_words = dict.fromkeys(set(document), 0)
             for word in document:
                 dicc_words[word] += 1
             self.matrix_tf.append(dicc_words)
@@ -46,19 +53,19 @@ class Recommender_CB:
 
         # TF-IDF
         for words in self.matrix_tf:
-            dicc_words = dict.fromkeys(self.total_words, 0)
+            dicc_words = dict.fromkeys(set(words), 0)
             for word, value in words.items():
                 dicc_words[word] = value * self.dict_idf[word]
             self.matrix_tf_idf.append(dicc_words)
 
         # Normalizer tf-idf
         for words in self.matrix_tf:
-            dict_total_words = dict.fromkeys(self.total_words,0)
+            dict_words = dict.fromkeys(words,0)
             pow_array = map(lambda value: pow(value,2) , words.values())
             value_normalizer = math.sqrt( sum(pow_array) )
             for word, value in words.items():
-                dict_total_words[word] = float(value) / float(value_normalizer)
-            self.matrix_tf_norm.append(dict_total_words)
+                dict_words[word] = float(value) / float(value_normalizer)
+            self.matrix_tf_norm.append(dict_words)
 
         # Cosine between documents
         for tfs in self.matrix_tf_norm:
@@ -66,7 +73,8 @@ class Recommender_CB:
             for column in range(self.N):
                 total = 0
                 for word, value in tfs.items():
-                    total += value * self.matrix_tf_norm[column][word]
+                    if self.matrix_tf_norm[column].has_key(word):
+                        total += value * self.matrix_tf_norm[column][word]
                 vector.append(total)
             self.matrix_cosine.append(vector)
 
