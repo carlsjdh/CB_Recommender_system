@@ -49,7 +49,7 @@ class Recommender_CB:
         self.dict_idf = dict.fromkeys(self.total_words, 0)
 
         for word in self.dict_df.keys():
-            self.dict_idf[word] = math.log( self.N / float(self.dict_df[word]))
+            self.dict_idf[word] = math.log10( self.N / float(self.dict_df[word]))
 
         # TF-IDF
         for words in self.matrix_tf:
